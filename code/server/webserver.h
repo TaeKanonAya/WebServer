@@ -60,7 +60,7 @@ private:
     int timeoutMS_;  /* 毫秒MS */
     bool isClose_;
     int listenFd_;
-    char* srcDir_;
+    char* srcDir_; // source diretory
     
     uint32_t listenEvent_;
     uint32_t connEvent_;
@@ -68,7 +68,7 @@ private:
     std::unique_ptr<HeapTimer> timer_;
     std::unique_ptr<ThreadPool> threadpool_;
     std::unique_ptr<Epoller> epoller_;
-    std::unordered_map<int, HttpConn> users_;
+    std::unordered_map<int, HttpConn> users_; // save the information of client connections, the first of map is fd
 };
 
 

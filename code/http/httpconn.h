@@ -53,7 +53,7 @@ public:
 
     static bool isET;
     static const char* srcDir;
-    static std::atomic<int> userCount;
+    static std::atomic<int> userCount; // all clients
     
 private:
    

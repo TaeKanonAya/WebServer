@@ -16,9 +16,9 @@ WebServer::WebServer(
             port_(port), openLinger_(OptLinger), timeoutMS_(timeoutMS), isClose_(false),
             timer_(new HeapTimer()), threadpool_(new ThreadPool(threadNum)), epoller_(new Epoller())
     {
-    srcDir_ = getcwd(nullptr, 256);
-    assert(srcDir_);
-    strncat(srcDir_, "/resources/", 16);
+    srcDir_ = getcwd(nullptr, 256); // get the current working path
+    assert(srcDir_); // path: ~/webserver/
+    strncat(srcDir_, "/resources/", 16);// path: ~/webserver/resources/
     HttpConn::userCount = 0;
     HttpConn::srcDir = srcDir_;
     SqlConnPool::Instance()->Init("localhost", sqlPort, sqlUser, sqlPwd, dbName, connPoolNum);
@@ -50,7 +50,7 @@ WebServer::~WebServer() {
 }
 
 void WebServer::InitEventMode_(int trigMode) {
-    listenEvent_ = EPOLLRDHUP;
+    listenEvent_ = EPOLLRDHUP; // set listen event
     connEvent_ = EPOLLONESHOT | EPOLLRDHUP;
     switch (trigMode)
     {
@@ -87,7 +87,7 @@ void WebServer::Start() {
             int fd = epoller_->GetEventFd(i);
             uint32_t events = epoller_->GetEvents(i);
             if(fd == listenFd_) {
-                DealListen_();
+                DealListen_(); // accept new client connections
             }
             else if(events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR)) {
                 assert(users_.count(fd) > 0);
@@ -166,16 +166,17 @@ void WebServer::ExtentTime_(HttpConn* client) {
     if(timeoutMS_ > 0) { timer_->adjust(client->GetFd(), timeoutMS_); }
 }
 
+// this function exec in son thread
 void WebServer::OnRead_(HttpConn* client) {
     assert(client);
     int ret = -1;
     int readErrno = 0;
-    ret = client->read(&readErrno);
+    ret = client->read(&readErrno); // read information from client
     if(ret <= 0 && readErrno != EAGAIN) {
         CloseConn_(client);
         return;
     }
-    OnProcess(client);
+    OnProcess(client); // deal business logic
 }
 
 void WebServer::OnProcess(HttpConn* client) {
