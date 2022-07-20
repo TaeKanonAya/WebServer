@@ -52,9 +52,9 @@ char* Buffer::BeginWrite() {
     return BeginPtr_() + writePos_;
 }
 
-// void Buffer::HasWritten(size_t len) {
-//     writePos_ += len;
-// } 
+void Buffer::HasWritten(size_t len) {
+    writePos_ += len;
+} 
 
 void Buffer::Append(const std::string& str) {
     Append(str.data(), str.length());
@@ -69,7 +69,7 @@ void Buffer::Append(const char* str, size_t len) {
     assert(str);
     EnsureWriteable(len);
     std::copy(str, str + len, BeginWrite());
-    // HasWritten(len);
+    HasWritten(len);
     writePos_ += len;
 }
 
