@@ -70,7 +70,6 @@ void Buffer::Append(const char* str, size_t len) {
     EnsureWriteable(len);
     std::copy(str, str + len, BeginWrite());
     HasWritten(len);
-    writePos_ += len;
 }
 
 void Buffer::Append(const Buffer& buff) {
